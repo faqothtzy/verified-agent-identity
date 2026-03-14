@@ -15,18 +15,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
+          # Caching membantu mempercepat workflow berikutnya
+          cache: 'npm'
+          cache-dependency-path: './scripts/package-json.lock' # sesuaikan jika ada lock file
 
       - name: Install ClawHub skill
         run: npx clawhub@latest install verified-agent-identity
 
-      - name: Install dependencies
+      - name: Install and Run Scripts
+        working-directory: ./scripts
         run: |
-          cd scripts
           npm install
-
-      - name: Create Ethereum Identity
-        run: node scripts/createNewEthereumIdentity.js
-
-      - name: Link Human to Agent
-        run: |
-          node scripts/manualLinkHumanToAgent.js --challenge '{"name":"faqothtzy","description":"AI Agent"}'
+          node createNewEthereumIdentity.js
+          node manualLinkHumanToAgent.js --challenge '{"name":"faqothtzy","description":"AI Agent"}'
