@@ -6,29 +6,24 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Node
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: 18
 
-      - name: Step 1 - Install ClawHub skill
+      - name: Install Skill
         run: npx clawhub@latest install verified-agent-identity
 
-      - name: Install script dependencies
+      - name: Install Deps and Create ID
         working-directory: ./scripts
         run: |
-          rm -rf node_modules package-lock.json
           npm install
+          node createNewEthereumIdentity.js
 
-      - name: Step 2 - Create new Ethereum Identity
-        working-directory: ./scripts
-        run: node createNewEthereumIdentity.js
-
-      - name: Step 3 - Link Human to Agent
+      - name: Link Identity
         working-directory: ./scripts
         run: node manualLinkHumanToAgent.js --challenge '{"name":"faqothtzy","description":"faqothtzy AI Agent"}'
